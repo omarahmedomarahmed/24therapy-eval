@@ -4,7 +4,7 @@ An external evaluation of the 24Therapy API, its server kits, app kits and video
 public docs, the OpenAPI contract and the kit files from the partner portal. Sandbox keys only. Every person,
 patient, clinician and audio file here is invented.
 
-Results: **[REPORT.md](REPORT.md)** (matrix, kit scorecards, top fixes).
+Results: **[REPORT.md](REPORT.md)** (matrix, kit scorecards, top fixes) and **[EVALUATION_LOG.md](EVALUATION_LOG.md)** (every step with proof, problems and workarounds).
 
 ## Layout
 

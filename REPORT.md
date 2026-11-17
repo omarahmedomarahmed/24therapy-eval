@@ -1,5 +1,7 @@
 # 24Therapy integration evaluation: report
 
+Full step-by-step log with proof, problems, workarounds and the instructions given mid-run: [EVALUATION_LOG.md](EVALUATION_LOG.md).
+
 Date: 2026-11-17. Sandbox keys only, invented data only. Sources: public docs, `openapi.json`, the kit files from the
 partner portal (server kits 3.0.0, browser kit 0.6.1, mobile kits 0.2.0). Every number below comes from a run in
 `evals/`. "Time" = seconds from server start to the approved note in that cell.
@@ -156,3 +158,11 @@ every web run; the Franco line was transcribed into Arabic script and raised an 
 18. **Agora and Daily over restricted networks.** Add "media needs UDP or the provider's TURN/TLS proxy" to `/docs/video`, and say that a remote track without media shows up as `silent` pieces in `onPiece`, so partners can alert on it.
 19. **Portal "Your stack" control** on Home is hidden behind "Change" and was not settable by scripted onboarding within 5 s; keep the selects labelled and in the DOM so automation and screen readers can set the stack.
 20. **Android APK size.** Recommend `ndk.abiFilters` in `/docs/apps/android` (the Agora voice SDK made a 114 MB APK; arm64 only is 42 MB) and publish the kit's Maven artifacts so partners do not vendor the zip.
+
+## 5. UI fixes (patient consent and screens)
+
+1. **After yes, leave the yes / no form.** Today the confirmation appears under still-active نعم / لا buttons, the 18+ box unticks, and a later tap shows "the page was open too long, answer again". Replace the form with a done state and one "Back to the session" button.
+2. **Send the patient back to the session.** Honour a `return_url` on the session's consent link (it exists only on `POST /subjects/{id}/patient-links`), post a message to the embedding page, or close the mobile Custom Tab with a deep link back to the app.
+3. **Make the consent an orb or dropdown over the call, not a separate page.** The builder and the browser kit already have `orb` / `dropdown` modes and `POST /widget/patient-tokens`; make that the default in the guide and give the mobile kits a bottom sheet instead of a Custom Tab, closing itself after the answer.
+4. The full consent page opened by the mobile kits is not in the platform's colours, and Chrome offers to translate it.
+5. React Native needs `forceRTL` for Arabic-first screens; Android `FLAG_SECURE` needs a debug switch for test evidence; the widget shows "من 24Therapy" unless white label is ticked; the portal's "Your stack" selects hide behind "Change".
