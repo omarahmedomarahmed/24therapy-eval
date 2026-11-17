@@ -9,6 +9,7 @@ const [slug, provider] = process.argv.slice(2);
 const P = JSON.parse(fs.readFileSync(`${ROOT}/base/platforms.json`)).find((x) => x.slug === slug);
 const KEY = process.env[`P${P.n}_API_KEY`], PORT = P.port, ORIGIN = `http://localhost:${PORT}`, VT = 4000 + P.n;
 const OUT = `${ROOT}/evals/${slug}/${provider}`; fs.rmSync(OUT, { recursive: true, force: true }); fs.mkdirSync(OUT, { recursive: true });
+try { execFileSync('bash', ['-c', `fuser -k ${PORT}/tcp ${4000 + P.n}/tcp 2>/dev/null; true`]); } catch {}
 const SERVER = { node: ['node', ['servers/node/server.mjs']], python: ['python3', ['servers/python/server.py']], php: ['php', ['-S', `localhost:${PORT}`, 'servers/php/index.php']],
   dotnet: ['dotnet', ['run', '--no-build', '--project', 'servers/dotnet']], java: ['java', ['-cp', 'servers/java/out', 'Server']] }[P.server];
 const AUDIO = `${ROOT}/base/scenario/session-ar.wav`;
@@ -36,6 +37,7 @@ try {
   run('node', ['base/video/server.mjs'], { VIDEO_TOKEN_PORT: String(VT) }, 'video');
   const srv = run(SERVER[0], SERVER[1], { PLATFORM: slug, PORT: String(PORT), VIDEO_PROVIDER: provider, VIDEO_TOKEN_PORT: String(VT), TWENTYFOUR_API_KEY: KEY, TWENTYFOUR_WEBHOOK_SECRET: secret, TWENTYFOUR_WIDGET_ORIGIN: ORIGIN }, 'server');
   await wait(async () => (await fetch(`${ORIGIN}/config`)).ok, 240000, 1000);
+  const cfgNow = await (await fetch(`${ORIGIN}/config`)).json(); if (cfgNow.provider !== provider) throw new Error(`server reports provider ${cfgNow.provider}, expected ${provider} (stale server on the port?)`);
   await step(`Start the ${P.server} server with VIDEO_PROVIDER=${provider}`, `${SERVER[0]} ${SERVER[1].join(' ')}`, await (await fetch(`${ORIGIN}/config`)).json());
   const b = await chromium.launch({ args: ['--use-fake-ui-for-media-stream', '--use-fake-device-for-media-stream', `--use-file-for-fake-audio-capture=${AUDIO}`, '--autoplay-policy=no-user-gesture-required'] });
   const tc = await b.newContext({ viewport: { width: 1280, height: 800 }, recordVideo: { dir: OUT, size: { width: 1280, height: 800 } } }); await tc.grantPermissions(['microphone', 'camera']);

@@ -1,0 +1,84 @@
+{
+  "platform": "bahr",
+  "provider": "agora",
+  "server": "python",
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3060/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 2,
+      "title": "Start the python server with VIDEO_PROVIDER=agora",
+      "code": "python3 servers/python/server.py",
+      "screenshot": null,
+      "result": {
+        "slug": "bahr",
+        "name": "Bahr Mind",
+        "provider": "agora",
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/flutter/flutter-original.svg",
+        "patientRecorder": false,
+        "colours": {
+          "primary": "#02569B",
+          "ink": "#04223D",
+          "surface": "#EEF6FD"
+        }
+      },
+      "ok": true,
+      "seconds": 1.1
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3060/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Bahr Mind"
+      },
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_680abffe4083481180f33d4fd7e32ec5",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.5
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 2.1
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.9
+    }
+  ]
+}

@@ -2,6 +2,10 @@
   "platform": "layla",
   "provider": "zoom",
   "server": "node",
+  "verdict": "blocked",
+  "reason": "blocked: Zoom Video SDK key and secret needed",
+  "first_session_seconds": null,
+  "total_seconds": 37.789,
   "steps": [
     {
       "step": 1,
@@ -79,6 +83,19 @@
       ],
       "ok": true,
       "seconds": 1.9
+    },
+    {
+      "step": 7,
+      "title": "Both join the call; the recorder sees consent and records",
+      "code": "Providers.zoom.join + createRecorder",
+      "screenshot": "07.webp",
+      "result": {
+        "recorder": "recording",
+        "remote_video": false,
+        "video_error": "blocked: Zoom Video SDK key and secret needed"
+      },
+      "ok": false,
+      "seconds": 22.6
     }
   ]
 }

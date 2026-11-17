@@ -1,0 +1,142 @@
+{
+  "platform": "hadith",
+  "provider": "daily",
+  "server": "dotnet",
+  "verdict": "fail",
+  "reason": "page.evaluate: TypeError: Failed to fetch\n    at Object.j (http://localhost:3040/static/app.js:4:60)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:24)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
+  "first_session_seconds": null,
+  "total_seconds": 50.397,
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3040/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 2,
+      "title": "Start the dotnet server with VIDEO_PROVIDER=daily",
+      "code": "dotnet run --no-build --project servers/dotnet",
+      "screenshot": null,
+      "result": {
+        "slug": "hadith",
+        "name": "Hadith Care",
+        "provider": "webrtc",
+        "colours": {
+          "primary": "#6C3FC9",
+          "ink": "#22114A",
+          "surface": "#F7F3FF"
+        },
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dotnetcore/dotnetcore-original.svg",
+        "patientRecorder": false
+      },
+      "ok": true,
+      "seconds": 0
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3040/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Hadith Care"
+      },
+      "ok": true,
+      "seconds": 0.7
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_0e0d3eb34f30499e9dfe7507fda1685d",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.2
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.9
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 2
+    },
+    {
+      "step": 7,
+      "title": "Both join the call; the recorder sees consent and records",
+      "code": "Providers.daily.join + createRecorder",
+      "screenshot": "07.webp",
+      "result": {
+        "recorder": "recording",
+        "remote_video": true,
+        "video_error": null
+      },
+      "ok": true,
+      "seconds": 2.4
+    },
+    {
+      "step": 8,
+      "title": "Therapist widget in the call (live transcript)",
+      "code": "K.mount(el, { launch: K.widgetLauncher('/24t', { view: 'session', session }) })",
+      "screenshot": "08.webp",
+      "result": {
+        "ready": true
+      },
+      "ok": true,
+      "seconds": 0.3
+    },
+    {
+      "step": 9,
+      "title": "Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio",
+      "code": "recorder -> kit relay -> POST /sessions/{id}/audio",
+      "screenshot": "09.webp",
+      "result": [
+        {
+          "speaker": "patient",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        }
+      ],
+      "ok": true,
+      "seconds": 25.3
+    }
+  ]
+}
