@@ -73,7 +73,7 @@ public class Server {
         ph.authorizePatientSession = (req, session, patient) -> true;
         patientRoutes = Routes.patient(tf, ph);
 
-        HttpServer server = HttpServer.create(new InetSocketAddress("localhost", Integer.parseInt(PORT)), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress(env("BIND_HOST", "localhost"), Integer.parseInt(PORT)), 0);
         server.setExecutor(pool);
         server.createContext("/", Server::handle);
         server.start();

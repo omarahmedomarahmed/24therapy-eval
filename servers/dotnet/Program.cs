@@ -33,7 +33,7 @@ string Sign(string v) => $"{v}.{Convert.ToHexString(HMACSHA256.HashData(Encoding
 }
 
 var builder = WebApplication.CreateBuilder(args);
-builder.WebHost.UseUrls($"http://localhost:{PORT}");
+builder.WebHost.UseUrls($"http://{Env("BIND_HOST", "localhost")}:{PORT}");
 builder.Logging.SetMinimumLevel(LogLevel.Warning);
 var app = builder.Build();
 
