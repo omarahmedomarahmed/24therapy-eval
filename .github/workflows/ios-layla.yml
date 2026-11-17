@@ -1,0 +1,28 @@
+# Layla Health (iOS, Swift, docs' no-kit steps): unit tests, simulator build, launch, screenshot
+# and screen recording. No 24Therapy key in CI: a full session needs a repo secret and a reachable
+# platform server, so the simulator run stops at the start screen ("simulator only").
+name: ios-layla
+on: { push: { paths: ["platforms/layla/**", "base/scenario/**", ".github/workflows/ios-layla.yml"] }, workflow_dispatch: {} }
+jobs:
+  ios:
+    runs-on: macos-14
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit tests (cutter, key formula, bundled audio)
+        run: cd platforms/layla/ios/LaylaCore && swift test
+      - name: Generate the Xcode project
+        run: brew install xcodegen && cd platforms/layla/ios && xcodegen generate
+      - name: Build for the simulator
+        run: cd platforms/layla/ios && xcodebuild -project Layla.xcodeproj -scheme Layla -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -20
+      - name: Run in the iPhone simulator, record
+        run: |
+          UDID=$(xcrun simctl create layla "iPhone 15" 2>/dev/null || xcrun simctl list devices available | grep -m1 iPhone | grep -oE '[0-9A-F-]{36}')
+          xcrun simctl boot "$UDID"; sleep 20
+          xcrun simctl install "$UDID" platforms/layla/ios/build/Build/Products/Debug-iphonesimulator/Layla.app
+          xcrun simctl io "$UDID" recordVideo --codec h264 layla.mp4 & REC=$!
+          xcrun simctl launch "$UDID" app.layla.Layla; sleep 12
+          xcrun simctl io "$UDID" screenshot layla-start.png
+          kill -INT $REC; sleep 3
+      - uses: actions/upload-artifact@v4
+        with: { name: layla-ios-simulator, path: "layla-start.png\nlayla.mp4" }

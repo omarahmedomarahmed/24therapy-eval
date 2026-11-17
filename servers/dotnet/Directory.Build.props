@@ -1,0 +1,8 @@
+<Project>
+  <!-- The runner sets PLATFORM (the platform slug); MSBuild reads environment variables as
+       properties, case-insensitively, so it would become $(Platform) and move the output to
+       bin/<slug>/. Pin the build platform here, before the SDK computes its output paths. -->
+  <PropertyGroup>
+    <Platform>AnyCPU</Platform>
+  </PropertyGroup>
+</Project>

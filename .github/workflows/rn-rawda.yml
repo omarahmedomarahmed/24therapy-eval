@@ -1,0 +1,48 @@
+# Rawda Space (React Native, docs' no-kit steps): core tests, Android APK (published as a GitHub
+# release so BrowserStack can install it from a public link) and an iOS simulator build.
+name: rn-rawda
+on: { push: { paths: ["platforms/rawda/**", ".github/workflows/rn-rawda.yml"] }, workflow_dispatch: {} }
+permissions: { contents: write }
+jobs:
+  android:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: 17 }
+      - run: cd platforms/rawda/react-native && node --test core.test.mjs
+      - name: Create the React Native app and copy the Rawda screen in
+        run: |
+          npx --yes @react-native-community/cli@15 init Rawda --version 0.76.5 --skip-git-init --install-pods false --directory rn-app
+          node platforms/rawda/react-native/make-audio.mjs
+          cp platforms/rawda/react-native/{App.tsx,rawda-core.mjs,audio.ts} rn-app/
+          sed -i 's/<application/<application android:usesCleartextTraffic="true"/' rn-app/android/app/src/main/AndroidManifest.xml
+      - name: Build the release APK (debug-signed, arm64)
+        run: cd rn-app/android && ./gradlew assembleRelease -PreactNativeArchitectures=arm64-v8a --no-daemon -q
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: rawda-rn-${{ github.run_number }}
+          name: Rawda Space RN APK (evaluation, sandbox only)
+          body: Invented test app for the 24Therapy evaluation. No key inside; it talks only to its own platform server.
+          files: rn-app/android/app/build/outputs/apk/release/app-release.apk
+  ios:
+    runs-on: macos-14
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: 20 }
+      - name: Create the app, build for the iPhone simulator, launch and screenshot
+        run: |
+          npx --yes @react-native-community/cli@15 init Rawda --version 0.76.5 --skip-git-init --directory rn-app
+          node platforms/rawda/react-native/make-audio.mjs
+          cp platforms/rawda/react-native/{App.tsx,rawda-core.mjs,audio.ts} rn-app/
+          cd rn-app/ios && xcodebuild -workspace Rawda.xcworkspace -scheme Rawda -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -5
+          UDID=$(xcrun simctl create rawda "iPhone 15"); xcrun simctl boot $UDID; sleep 20
+          xcrun simctl install $UDID build/Build/Products/Release-iphonesimulator/Rawda.app
+          xcrun simctl launch $UDID org.reactjs.native.example.Rawda; sleep 15; xcrun simctl io $UDID screenshot ../../rawda-ios.png
+      - uses: actions/upload-artifact@v4
+        with: { name: rawda-ios-simulator, path: rawda-ios.png }

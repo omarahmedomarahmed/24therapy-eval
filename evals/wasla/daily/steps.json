@@ -1,0 +1,373 @@
+{
+  "platform": "wasla",
+  "provider": "daily",
+  "server": "php",
+  "verdict": "partial",
+  "reason": "Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio",
+  "first_session_seconds": 72.093,
+  "total_seconds": 118.198,
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3030/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 2,
+      "title": "Start the php server with VIDEO_PROVIDER=daily",
+      "code": "php -S localhost:3030 servers/php/index.php",
+      "screenshot": null,
+      "result": {
+        "slug": "wasla",
+        "name": "Wasla Health",
+        "provider": "daily",
+        "colours": {
+          "primary": "#7A86B8",
+          "ink": "#24263D",
+          "surface": "#F6F6FB"
+        },
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg",
+        "patientRecorder": false
+      },
+      "ok": true,
+      "seconds": 1
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3030/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Wasla Health"
+      },
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_84f1785a64134dc2b155e2c2504c025c",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.5
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.7
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.7
+    },
+    {
+      "step": 7,
+      "title": "Both join the call; the recorder sees consent and records",
+      "code": "Providers.daily.join + createRecorder",
+      "screenshot": "07.webp",
+      "result": {
+        "recorder": "recording",
+        "remote_video": false,
+        "video_error": null
+      },
+      "ok": true,
+      "seconds": 22.1
+    },
+    {
+      "step": 8,
+      "title": "Therapist widget in the call (live transcript)",
+      "code": "K.mount(el, { launch: K.widgetLauncher('/24t', { view: 'session', session }) })",
+      "screenshot": "08.webp",
+      "result": {
+        "ready": true
+      },
+      "ok": true,
+      "seconds": 0.2
+    },
+    {
+      "step": 9,
+      "title": "Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio",
+      "code": "recorder -> kit relay -> POST /sessions/{id}/audio",
+      "screenshot": "09.webp",
+      "result": [
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        }
+      ],
+      "ok": false,
+      "seconds": 25.3
+    },
+    {
+      "step": 10,
+      "title": "Send the two invented risk lines (Egyptian Arabic and Franco) as segments",
+      "code": [
+        {
+          "speaker": "clinician",
+          "text": "إزيك النهارده؟ الأسبوع ده كان عامل إزاي معاك؟"
+        },
+        {
+          "speaker": "patient",
+          "text": "بصراحة تعبت أوي، ساعات بحس إني عايز أموت نفسي وأخلص من كل ده."
+        },
+        {
+          "speaker": "clinician",
+          "text": "شكرًا إنك قلتلي. إنت دلوقتي في أمان؟"
+        },
+        {
+          "speaker": "patient",
+          "text": "msh 3aref, sa3at bafakar a2tel nafsy w akhalas mn kol da"
+        }
+      ],
+      "screenshot": null,
+      "result": {
+        "segments_added": 4,
+        "dropped": 0
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 11,
+      "title": "Risk alert raised; risk.alert.created webhook verified by the kit",
+      "code": "GET /risk-alerts?session=  +  POST /24t/webhooks",
+      "screenshot": "11.webp",
+      "result": {
+        "alert": {
+          "level": "elevated",
+          "status": "open"
+        },
+        "webhooks": [
+          "consent.given",
+          "consent.given",
+          "grant.confirmed",
+          "transcript.ready",
+          "risk.alert.created"
+        ]
+      },
+      "ok": true,
+      "seconds": 2.1
+    },
+    {
+      "step": 12,
+      "title": "End the session",
+      "code": "recorder.stop(); POST /api/sessions/{id}/end -> endSession (Idempotency-Key end-<id>)",
+      "screenshot": "12.webp",
+      "result": {
+        "id": "ses_84f1785a64134dc2b155e2c2504c025c",
+        "ended_at": "2026-11-17T17:14:01Z",
+        "status": "note_drafting"
+      },
+      "ok": true,
+      "seconds": 2.8
+    },
+    {
+      "step": 13,
+      "title": "Note draft ready (note.draft_ready)",
+      "code": "GET /sessions/{id}/note",
+      "screenshot": "13.webp",
+      "result": {
+        "status": "draft",
+        "format": "soap",
+        "sections": [
+          "subjective",
+          "objective",
+          "assessment",
+          "plan"
+        ],
+        "transcript_segments": 11,
+        "webhooks": [
+          "consent.given",
+          "consent.given",
+          "grant.confirmed",
+          "transcript.ready",
+          "risk.alert.created",
+          "session.ended",
+          "note.draft_ready"
+        ]
+      },
+      "ok": true,
+      "seconds": 11
+    },
+    {
+      "step": 14,
+      "title": "Clinician approves the note",
+      "code": "approveNote(id, { approved_by, sections })",
+      "screenshot": "14.webp",
+      "result": {
+        "status": "approved"
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 15,
+      "title": "Acknowledge the risk alert (read first, then acknowledge)",
+      "code": "getRiskAlert(id); acknowledgeRiskAlert(id, { by, note, outcome: 'patient_contacted_plan_made' })",
+      "screenshot": "15.webp",
+      "result": {
+        "status": "acknowledged"
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 16,
+      "title": "Patient summary: draft, approve, deliver (after the alert is acknowledged)",
+      "code": "getSummary + approveSummary(id, { approved_by, text })",
+      "screenshot": "16.webp",
+      "result": {
+        "draft_status": "draft",
+        "approved": "delivered"
+      },
+      "ok": true,
+      "seconds": 7.7
+    },
+    {
+      "step": 17,
+      "title": "Memory and copilot (raw HTTPS: the kit has no method)",
+      "code": "GET /subjects/{id}/memory?clinician=  +  POST /copilot/questions",
+      "screenshot": "17.webp",
+      "result": {
+        "memory": [
+          "subject",
+          "generated_at",
+          "profile",
+          "conflicts",
+          "timeline"
+        ],
+        "copilot": {
+          "answer": "تم الاتفاق على محاولة تثبيت ميعاد النوم [S-wasla-1794935584179]. تم الاتفاق على تقليل استخدام الموبايل قبل النوم بساعة [S-wasla-1794935584179].",
+          "citations": 1
+        }
+      },
+      "ok": true,
+      "seconds": 3
+    },
+    {
+      "step": 18,
+      "title": "Usage and error handling",
+      "code": "getUsage(); getSession(bad id); getSession(unknown); ping(bad key)",
+      "screenshot": null,
+      "result": {
+        "usage": {
+          "month": "2026-11",
+          "billable_sessions": 0,
+          "limit": 0,
+          "projected": 0,
+          "stopped": false,
+          "per_session_price_cents": 200,
+          "free_sessions": 0,
+          "amount_cents": 0,
+          "currency": "USD"
+        },
+        "errors": {
+          "bad_id": {
+            "error": "InvalidArgumentException",
+            "message": "not a 24Therapy id: not-an-id"
+          },
+          "unknown": {
+            "status": 404,
+            "code": "not_found",
+            "type": "not_found",
+            "message": "24Therapy 404 not_found: Nothing was found here. (request req_bfba153d9a4e379e7cd31809d9e1b169)",
+            "request_id": "req_bfba153d9a4e379e7cd31809d9e1b169",
+            "retry_after": null
+          },
+          "bad_key": {
+            "status": 401,
+            "code": "key_invalid",
+            "type": "authentication",
+            "message": "24Therapy 401 key_invalid: This API key is not valid. (request req_b2bb2f84a1a51c99a9b64c4b1f543313)",
+            "request_id": "req_b2bb2f84a1a51c99a9b64c4b1f543313",
+            "retry_after": null
+          }
+        }
+      },
+      "ok": true,
+      "seconds": 1.1
+    },
+    {
+      "step": 19,
+      "title": "Webhooks received and verified during the session",
+      "code": "verifyWebhook in the kit route",
+      "screenshot": "19.webp",
+      "result": [
+        "consent.given",
+        "grant.confirmed",
+        "transcript.ready",
+        "risk.alert.created",
+        "session.ended",
+        "note.draft_ready",
+        "note.approved",
+        "summary.draft_ready",
+        "risk.alert.acknowledged",
+        "memory.updated",
+        "summary.delivered"
+      ],
+      "ok": true,
+      "seconds": 0.2
+    }
+  ]
+}

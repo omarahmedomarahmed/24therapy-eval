@@ -1,0 +1,101 @@
+{
+  "platform": "sakan",
+  "provider": "zoom",
+  "server": "python",
+  "verdict": "blocked",
+  "reason": "blocked: Zoom Video SDK key and secret needed",
+  "first_session_seconds": null,
+  "total_seconds": 39.49,
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3020/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 2,
+      "title": "Start the python server with VIDEO_PROVIDER=zoom",
+      "code": "python3 servers/python/server.py",
+      "screenshot": null,
+      "result": {
+        "slug": "sakan",
+        "name": "Sakan Therapy",
+        "provider": "zoom",
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/python/python-original.svg",
+        "patientRecorder": true,
+        "colours": {
+          "primary": "#3776AB",
+          "ink": "#0E2A47",
+          "surface": "#F3F8FD"
+        }
+      },
+      "ok": true,
+      "seconds": 1
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3020/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Sakan Therapy"
+      },
+      "ok": true,
+      "seconds": 0.5
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_0c8743f849814a7f9f7886b640fde25f",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.8
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.6
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.6
+    },
+    {
+      "step": 7,
+      "title": "Both join the call; the recorder sees consent and records",
+      "code": "Providers.zoom.join + createRecorder",
+      "screenshot": "07.webp",
+      "result": {
+        "recorder": "recording",
+        "remote_video": false,
+        "video_error": "blocked: Zoom Video SDK key and secret needed"
+      },
+      "ok": false,
+      "seconds": 23
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <!-- The shared base (base/CONTRACT.md) on the 24Therapy .NET kit 3.0.0: the kit's two files,
+       copied from the portal into vendor/ (git-ignored), compiled in as the kit README says. -->
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>Server</AssemblyName>
+    <InvariantGlobalization>true</InvariantGlobalization>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="../../vendor/TwentyFourTherapy.cs" Link="TwentyFourTherapy.cs" />
+    <Compile Include="../../vendor/TwentyFourTherapy.AspNetCore.cs" Link="TwentyFourTherapy.AspNetCore.cs" />
+  </ItemGroup>
+</Project>

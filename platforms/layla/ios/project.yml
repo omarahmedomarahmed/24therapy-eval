@@ -1,0 +1,11 @@
+name: Layla
+options: { bundleIdPrefix: app.layla, deploymentTarget: { iOS: "16.0" } }
+packages: { LaylaCore: { path: LaylaCore } }
+targets:
+  Layla:
+    type: application
+    platform: iOS
+    sources: [App, { path: ../../../base/scenario/session-ar.wav, buildPhase: resources }]
+    dependencies: [{ package: LaylaCore }]
+    info: { path: App/Info.plist, properties: { UILaunchScreen: {}, NSAppTransportSecurity: { NSAllowsLocalNetworking: true }, CFBundleDisplayName: "Layla Health" } }
+    settings: { base: { CODE_SIGNING_ALLOWED: "NO", GENERATE_INFOPLIST_FILE: "YES" } }

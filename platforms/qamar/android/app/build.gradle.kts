@@ -4,6 +4,7 @@ android {
     compileSdk = 35
     defaultConfig {
         applicationId = "app.qamar.clinic"; minSdk = 28; targetSdk = 35; versionCode = 1; versionName = "0.1.0"
+        ndk { abiFilters += listOf("arm64-v8a") } // real devices only: keeps the APK small
         // The platform's own server (never 24Therapy's API, never a key). Pass -PserverBase=https://...
         buildConfigField("String", "SERVER_BASE", "\"${(findProperty("serverBase") as String?) ?: "http://10.0.2.2:3050"}\"")
         buildConfigField("String", "WIDGET_FRAME_ORIGIN", "\"${(findProperty("widgetOrigin") as String?) ?: "https://qamar.example.com"}\"")

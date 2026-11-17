@@ -1,0 +1,84 @@
+{
+  "platform": "layla",
+  "provider": "zoom",
+  "server": "node",
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3080/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 2,
+      "title": "Start the node server with VIDEO_PROVIDER=zoom",
+      "code": "node servers/node/server.mjs",
+      "screenshot": null,
+      "result": {
+        "slug": "layla",
+        "name": "Layla Health",
+        "provider": "zoom",
+        "colours": {
+          "primary": "#D6336C",
+          "ink": "#3D0A1E",
+          "surface": "#FFF3F7"
+        },
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/swift/swift-original.svg",
+        "patientRecorder": true
+      },
+      "ok": true,
+      "seconds": 1
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3080/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Layla Health"
+      },
+      "ok": true,
+      "seconds": 0.4
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_b78bb41f92f340288be20240742efeeb",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.2
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.8
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.9
+    }
+  ]
+}
