@@ -29,7 +29,7 @@ jobs:
           body: Invented test app for the 24Therapy evaluation. No key inside; it talks only to its own platform server.
           files: rn-app/android/app/build/outputs/apk/release/app-release.apk
   ios:
-    runs-on: macos-14
+    runs-on: macos-latest
     timeout-minutes: 60
     steps:
       - uses: actions/checkout@v4
@@ -41,7 +41,7 @@ jobs:
           node platforms/rawda/react-native/make-audio.mjs
           cp platforms/rawda/react-native/{App.tsx,rawda-core.mjs,audio.ts} rn-app/
           cd rn-app/ios && xcodebuild -workspace Rawda.xcworkspace -scheme Rawda -configuration Release -sdk iphonesimulator -destination 'generic/platform=iOS Simulator' -derivedDataPath build CODE_SIGNING_ALLOWED=NO build | tail -5
-          UDID=$(xcrun simctl create rawda "iPhone 15"); xcrun simctl boot $UDID; sleep 20
+          UDID=$(xcrun simctl create rawda "iPhone 16"); xcrun simctl boot $UDID; sleep 20
           xcrun simctl install $UDID build/Build/Products/Release-iphonesimulator/Rawda.app
           xcrun simctl launch $UDID org.reactjs.native.example.Rawda; sleep 15; xcrun simctl io $UDID screenshot ../../rawda-ios.png
       - uses: actions/upload-artifact@v4
