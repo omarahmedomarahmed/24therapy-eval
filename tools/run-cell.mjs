@@ -16,7 +16,7 @@ const SECRET_RE = /(24t_sk_(test|live)_[A-Za-z0-9_-]+|whsec_[A-Za-z0-9_-]+|wgt_[
 const scrub = (v) => JSON.parse(JSON.stringify(v ?? null).replace(SECRET_RE, (m) => m.slice(0, Math.min(m.length, m.startsWith('/p/') ? 3 : m.indexOf('_', 4) + 1 || 3)) + '••'));
 const procs = [], steps = []; let t0 = Date.now(), n = 0, first = null;
 const log = (...a) => console.log(`[${slug}/${provider}]`, ...a);
-function run(cmd, args, env, tag) { const c = spawn(cmd, args, { cwd: ROOT, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'] }); procs.push(c);
+function run(cmd, args, env, tag) { const c = spawn(cmd, args, { cwd: ROOT, env: { ...process.env, ...env }, stdio: ['ignore', 'pipe', 'pipe'], detached: true }); procs.push(c);
   let buf = ''; const on = (d) => { buf += d; fs.appendFileSync(`${OUT}/.${tag}.log`, String(d).replace(SECRET_RE, '••')); }; c.stdout.on('data', on); c.stderr.on('data', on); return { c, out: () => buf }; }
 const wait = async (fn, ms = 60000, every = 1000) => { const end = Date.now() + ms; let last; while (Date.now() < end) { try { last = await fn(); if (last) return last; } catch (e) { last = e; } await new Promise((r) => setTimeout(r, every)); } throw new Error('timeout' + (last instanceof Error ? ': ' + last.message : '')); };
 async function webp(png) { const w = png.replace(/\.png$/, '.webp'); execFileSync('python3', ['-I', '-c', `from PIL import Image;im=Image.open('${png}');im.thumbnail((1280,1280));q=70\nwhile True:\n im.save('${w}','WEBP',quality=q)\n import os\n if os.path.getsize('${w}')<300000 or q<30: break\n q-=10`]); fs.unlinkSync(png); return path.basename(w); }
@@ -62,7 +62,7 @@ try {
   await step('Therapist widget in the call (live transcript)', "K.mount(el, { launch: K.widgetLauncher('/24t', { view: 'session', session }) })", { ready: !!widgetReady }, th, !!widgetReady);
   await th.waitForTimeout(25000);
   const pieces = await th.evaluate(() => window.__pieces || []);
-  await step('Audio pieces relayed through POST /24t/sessions/{id}/audio', 'recorder -> kit relay -> POST /sessions/{id}/audio', pieces.map((p) => ({ speaker: p.speaker, outcome: p.outcome, status: p.status, code: p.code })), th, pieces.some((p) => p.outcome === 'sent'));
+  await step('Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio', 'recorder -> kit relay -> POST /sessions/{id}/audio', pieces.map((p) => ({ speaker: p.speaker, outcome: p.outcome, status: p.status, code: p.code })), th, pieces.some((p) => p.outcome === 'sent' && p.speaker === 'clinician') && (provider === 'zoom' || pieces.some((p) => p.outcome === 'sent' && p.speaker === 'patient')));
   const lines = JSON.parse(fs.readFileSync(`${ROOT}/base/scenario/risk-lines.json`));
   const seg = await th.evaluate(async ([id, l]) => App.j(`/api/sessions/${id}/segments`, { segments: l }), [s.session, lines.segments.map((x, i) => ({ ...x, start_seconds: 60 + i * 8, end_seconds: 66 + i * 8 }))]);
   await step('Send the two invented risk lines (Egyptian Arabic and Franco) as segments', lines.segments, seg, null);
@@ -95,7 +95,7 @@ try {
   await tc.close(); await pc.close(); await b.close();
 } catch (e) { if (verdict !== 'blocked') { verdict = 'fail'; reason = String(e.message).replace(SECRET_RE, '••').slice(0, 300); } log('stopped:', reason); }
 finally {
-  for (const c of procs) try { c.kill('SIGINT'); } catch {}
+  for (const c of procs) try { process.kill(-c.pid, 'SIGINT'); } catch { try { c.kill('SIGINT'); } catch {} }
   const vids = fs.readdirSync(OUT).filter((f) => f.endsWith('.webm') && !f.startsWith('recording'));
   if (vids.length) { try { execFileSync('ffmpeg', ['-y', '-loglevel', 'error', '-i', `${OUT}/${vids[0]}`, '-vf', 'scale=640:-2', '-c:v', 'libvpx-vp9', '-b:v', '250k', '-an', `${OUT}/recording.webm`]); } catch {} vids.forEach((v) => fs.unlinkSync(`${OUT}/${v}`)); }
   const result = { platform: slug, provider, server: P.server, verdict, reason, first_session_seconds: first, total_seconds: (Date.now() - started) / 1000, steps };

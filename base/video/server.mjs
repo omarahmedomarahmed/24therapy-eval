@@ -21,7 +21,7 @@ async function daily(room) {
 function agora(room, role) {
   if (!E.AGORA_APP_ID || !E.AGORA_APP_CERTIFICATE) return { blocked: 'blocked: Agora app id and certificate needed' };
   const uid = role === 'therapist' ? 1001 : 2002, channel = room.slice(0, 64);
-  return { appId: E.AGORA_APP_ID, channel, uid, token: RtcTokenBuilder.buildTokenWithUid(E.AGORA_APP_ID, E.AGORA_APP_CERTIFICATE, channel, uid, RtcRole.PUBLISHER, 3600, 3600) };
+  return { appId: E.AGORA_APP_ID, channel, uid, cloudProxy: E.AGORA_CLOUD_PROXY ? Number(E.AGORA_CLOUD_PROXY) : undefined, token: RtcTokenBuilder.buildTokenWithUid(E.AGORA_APP_ID, E.AGORA_APP_CERTIFICATE, channel, uid, RtcRole.PUBLISHER, 3600, 3600) };
 }
 async function vonage(room, role) {
   if (!E.VONAGE_PRIVATE_KEY_PATH) return { blocked: 'blocked: Vonage Video API needs the application private key (key and secret are refused: "Invalid API key or secret")' };

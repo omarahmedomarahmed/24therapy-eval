@@ -53,6 +53,7 @@ const Providers = (() => {
   async function agora(join, localEl, remoteEl) {
     await load('https://cdn.jsdelivr.net/npm/agora-rtc-sdk-ng@4.24.10/AgoraRTC_N-production.js');
     const A = window.AgoraRTC; const client = A.createClient({ mode: 'rtc', codec: 'vp8' });
+    if (join.cloudProxy) client.startProxyServer(join.cloudProxy); // TCP/TLS 443 when UDP is blocked
     client.on('user-published', async (user, kind) => { await client.subscribe(user, kind); if (kind === 'video') user.videoTrack.play(remoteEl.parentElement); if (kind === 'audio') user.audioTrack.play(); });
     await client.join(join.appId, join.channel, join.token, join.uid);
     const [micT, camT] = await A.createMicrophoneAndCameraTracks();

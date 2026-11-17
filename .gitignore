@@ -17,3 +17,6 @@ kits/
 evals/**/.*.log
 base/video/node_modules/
 servers/java/out/
+platforms/*/android/local.properties
+platforms/*/android/app/build/
+platforms/*/android/.gradle/
