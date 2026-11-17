@@ -1,0 +1,101 @@
+{
+  "platform": "hadith",
+  "provider": "vonage",
+  "server": "dotnet",
+  "verdict": "blocked",
+  "reason": "blocked: Vonage Video API needs the application private key (key and secret are refused: \"Invalid API key or secret\")",
+  "first_session_seconds": null,
+  "total_seconds": 39.395,
+  "steps": [
+    {
+      "step": 1,
+      "title": "Open a webhook listen session (24t listen)",
+      "code": "node 24t.mjs listen --forward-to http://localhost:3040/24t/webhooks",
+      "screenshot": null,
+      "result": "signing secret printed (kept in the server env only)",
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 2,
+      "title": "Start the dotnet server with VIDEO_PROVIDER=vonage",
+      "code": "dotnet run --no-build --project servers/dotnet",
+      "screenshot": null,
+      "result": {
+        "slug": "hadith",
+        "name": "Hadith Care",
+        "provider": "vonage",
+        "colours": {
+          "primary": "#6C3FC9",
+          "ink": "#22114A",
+          "surface": "#F7F3FF"
+        },
+        "logo": "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/dotnetcore/dotnetcore-original.svg",
+        "patientRecorder": false
+      },
+      "ok": true,
+      "seconds": 1.2
+    },
+    {
+      "step": 3,
+      "title": "Therapist opens the room in the platform colours",
+      "code": "GET http://localhost:3040/",
+      "screenshot": "03.webp",
+      "result": {
+        "title": "Hadith Care"
+      },
+      "ok": true,
+      "seconds": 0.6
+    },
+    {
+      "step": 4,
+      "title": "Start the session (subject + session through the server kit)",
+      "code": "POST /api/start -> putClinician, createSubject, createSession",
+      "screenshot": "04.webp",
+      "result": {
+        "session": "ses_9e8295532b744b16a979d0f4333a380d",
+        "status": "awaiting_consent"
+      },
+      "ok": true,
+      "seconds": 1.9
+    },
+    {
+      "step": 5,
+      "title": "Patient opens the consent page",
+      "code": "patient_consent_url (link hidden)",
+      "screenshot": "05.webp",
+      "result": [
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 1.9
+    },
+    {
+      "step": 6,
+      "title": "Patient says yes",
+      "code": "click نعم (yes)",
+      "screenshot": "06.webp",
+      "result": [
+        "English",
+        "هل نسجّل الجلسة ليتذكّرها معالجك في المرة القادمة؟",
+        "عمري 18+"
+      ],
+      "ok": true,
+      "seconds": 2.1
+    },
+    {
+      "step": 7,
+      "title": "Both join the call; the recorder sees consent and records",
+      "code": "Providers.vonage.join + createRecorder",
+      "screenshot": "07.webp",
+      "result": {
+        "recorder": "recording",
+        "remote_video": false,
+        "video_error": "blocked: Vonage Video API needs the application private key (key and secret are refused: \"Invalid API key or secret\")"
+      },
+      "ok": false,
+      "seconds": 22
+    }
+  ]
+}

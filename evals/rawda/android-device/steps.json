@@ -1,0 +1,6 @@
+{"platform":"rawda","client":"react-native-android (docs' no-kit steps)","device":"Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0)","verdict":"partial","reason":"built in public CI, released, installed and launched; full session needs the platform server on a public URL","steps":[
+ {"step":1,"title":"Core tests: SHA-256, piece key formula, cutter on the bundled audio","code":"node --test core.test.mjs","screenshot":null,"result":"3 pass","ok":true},
+ {"step":2,"title":"Build the APK in GitHub Actions and publish a release","code":".github/workflows/rn-rawda.yml (RN 0.76.5, arm64)","screenshot":null,"result":"release rawda-rn-2, app-release.apk 17.5 MB","ok":true},
+ {"step":3,"title":"Upload to BrowserStack from the release link","code":"upload_app_build url=github.com/.../releases/download/rawda-rn-2/app-release.apk","screenshot":null,"result":"bs:// build created","ok":true},
+ {"step":4,"title":"Launch on a real Pixel 8","code":"create_session appium_version=2.19.0","screenshot":"01-launch-pixel8.webp","result":"Rawda colours; layout stays LTR (I18nManager.allowRTL alone does not flip; needs forceRTL or an Arabic device locale)","ok":true},
+ {"step":5,"title":"Full session","code":"Start -> server","screenshot":null,"result":"blocked: the platform server is not on a public URL","ok":false}]}

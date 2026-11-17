@@ -23,3 +23,7 @@ platforms/*/android/.gradle/
 platforms/rawda/react-native/audio.ts
 platforms/layla/ios/build/
 platforms/layla/ios/*.xcodeproj
+platforms/bahr/flutter/build/
+platforms/bahr/flutter/.dart_tool/
+platforms/bahr/flutter/android/.gradle/
+platforms/bahr/flutter/android/local.properties

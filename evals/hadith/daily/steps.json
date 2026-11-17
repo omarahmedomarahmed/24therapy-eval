@@ -2,10 +2,10 @@
   "platform": "hadith",
   "provider": "daily",
   "server": "dotnet",
-  "verdict": "fail",
-  "reason": "page.evaluate: TypeError: Failed to fetch\n    at Object.j (http://localhost:3040/static/app.js:4:60)\n    at eval (eval at evaluate (:311:30), <anonymous>:1:24)\n    at UtilityScript.evaluate (<anonymous>:313:16)\n    at UtilityScript.<anonymous> (<anonymous>:1:44)",
-  "first_session_seconds": null,
-  "total_seconds": 50.397,
+  "verdict": "partial",
+  "reason": "Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio",
+  "first_session_seconds": 66.103,
+  "total_seconds": 101.192,
   "steps": [
     {
       "step": 1,
@@ -24,7 +24,7 @@
       "result": {
         "slug": "hadith",
         "name": "Hadith Care",
-        "provider": "webrtc",
+        "provider": "daily",
         "colours": {
           "primary": "#6C3FC9",
           "ink": "#22114A",
@@ -34,7 +34,7 @@
         "patientRecorder": false
       },
       "ok": true,
-      "seconds": 0
+      "seconds": 1.2
     },
     {
       "step": 3,
@@ -45,7 +45,7 @@
         "title": "Hadith Care"
       },
       "ok": true,
-      "seconds": 0.7
+      "seconds": 0.5
     },
     {
       "step": 4,
@@ -53,11 +53,11 @@
       "code": "POST /api/start -> putClinician, createSubject, createSession",
       "screenshot": "04.webp",
       "result": {
-        "session": "ses_0e0d3eb34f30499e9dfe7507fda1685d",
+        "session": "ses_4d01e549dd4f4b7c980637acb424f574",
         "status": "awaiting_consent"
       },
       "ok": true,
-      "seconds": 1.2
+      "seconds": 1.5
     },
     {
       "step": 5,
@@ -69,7 +69,7 @@
         "عمري 18+"
       ],
       "ok": true,
-      "seconds": 1.9
+      "seconds": 1.8
     },
     {
       "step": 6,
@@ -82,7 +82,7 @@
         "عمري 18+"
       ],
       "ok": true,
-      "seconds": 2
+      "seconds": 1.6
     },
     {
       "step": 7,
@@ -91,11 +91,11 @@
       "screenshot": "07.webp",
       "result": {
         "recorder": "recording",
-        "remote_video": true,
+        "remote_video": false,
         "video_error": null
       },
       "ok": true,
-      "seconds": 2.4
+      "seconds": 22
     },
     {
       "step": 8,
@@ -106,7 +106,7 @@
         "ready": true
       },
       "ok": true,
-      "seconds": 0.3
+      "seconds": 0.2
     },
     {
       "step": 9,
@@ -115,7 +115,7 @@
       "screenshot": "09.webp",
       "result": [
         {
-          "speaker": "patient",
+          "speaker": "clinician",
           "outcome": "sent",
           "status": 200
         },
@@ -126,17 +126,247 @@
         },
         {
           "speaker": "patient",
-          "outcome": "sent",
-          "status": 200
+          "outcome": "silent"
         },
         {
           "speaker": "clinician",
           "outcome": "sent",
           "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
+        },
+        {
+          "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
+          "outcome": "silent"
         }
       ],
+      "ok": false,
+      "seconds": 25.2
+    },
+    {
+      "step": 10,
+      "title": "Send the two invented risk lines (Egyptian Arabic and Franco) as segments",
+      "code": [
+        {
+          "speaker": "clinician",
+          "text": "إزيك النهارده؟ الأسبوع ده كان عامل إزاي معاك؟"
+        },
+        {
+          "speaker": "patient",
+          "text": "بصراحة تعبت أوي، ساعات بحس إني عايز أموت نفسي وأخلص من كل ده."
+        },
+        {
+          "speaker": "clinician",
+          "text": "شكرًا إنك قلتلي. إنت دلوقتي في أمان؟"
+        },
+        {
+          "speaker": "patient",
+          "text": "msh 3aref, sa3at bafakar a2tel nafsy w akhalas mn kol da"
+        }
+      ],
+      "screenshot": null,
+      "result": {
+        "segments_added": 4,
+        "dropped": 0
+      },
       "ok": true,
-      "seconds": 25.3
+      "seconds": 0.5
+    },
+    {
+      "step": 11,
+      "title": "Risk alert raised; risk.alert.created webhook verified by the kit",
+      "code": "GET /risk-alerts?session=  +  POST /24t/webhooks",
+      "screenshot": "11.webp",
+      "result": {
+        "alert": {
+          "level": "elevated",
+          "status": "open"
+        },
+        "webhooks": [
+          "consent.given",
+          "consent.given",
+          "grant.confirmed",
+          "transcript.ready",
+          "risk.alert.created"
+        ]
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 12,
+      "title": "End the session",
+      "code": "recorder.stop(); POST /api/sessions/{id}/end -> endSession (Idempotency-Key end-<id>)",
+      "screenshot": "12.webp",
+      "result": {
+        "id": "ses_4d01e549dd4f4b7c980637acb424f574",
+        "ended_at": "2026-11-17T17:32:21Z",
+        "status": "note_drafting"
+      },
+      "ok": true,
+      "seconds": 2.4
+    },
+    {
+      "step": 13,
+      "title": "Note draft ready (note.draft_ready)",
+      "code": "GET /sessions/{id}/note",
+      "screenshot": "13.webp",
+      "result": {
+        "status": "draft",
+        "format": "soap",
+        "sections": [
+          "subjective",
+          "objective",
+          "assessment",
+          "plan"
+        ],
+        "transcript_segments": 11,
+        "webhooks": [
+          "consent.given",
+          "consent.given",
+          "grant.confirmed",
+          "transcript.ready",
+          "risk.alert.created",
+          "session.ended"
+        ]
+      },
+      "ok": true,
+      "seconds": 7
+    },
+    {
+      "step": 14,
+      "title": "Clinician approves the note",
+      "code": "approveNote(id, { approved_by, sections })",
+      "screenshot": "14.webp",
+      "result": {
+        "status": "approved"
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 15,
+      "title": "Acknowledge the risk alert (read first, then acknowledge)",
+      "code": "getRiskAlert(id); acknowledgeRiskAlert(id, { by, note, outcome: 'patient_contacted_plan_made' })",
+      "screenshot": "15.webp",
+      "result": {
+        "status": "acknowledged"
+      },
+      "ok": true,
+      "seconds": 0.9
+    },
+    {
+      "step": 16,
+      "title": "Patient summary: draft, approve, deliver (after the alert is acknowledged)",
+      "code": "getSummary + approveSummary(id, { approved_by, text })",
+      "screenshot": "16.webp",
+      "result": {
+        "draft_status": "draft",
+        "approved": "delivered"
+      },
+      "ok": true,
+      "seconds": 1.1
+    },
+    {
+      "step": 17,
+      "title": "Memory and copilot (raw HTTPS: the kit has no method)",
+      "code": "GET /subjects/{id}/memory?clinician=  +  POST /copilot/questions",
+      "screenshot": "17.webp",
+      "result": {
+        "memory": [
+          "subject",
+          "generated_at",
+          "profile",
+          "conflicts",
+          "timeline"
+        ],
+        "copilot": {
+          "answer": "ناقشنا روتين النوم [S-hadith-1794936687055]. اتفقنا على تثبيت ميعاد النوم [S-hadith-1794936687055]. اتفقنا على تقليل استخدام الموبايل قبل النوم بساعة [S-hadith-",
+          "citations": 1
+        }
+      },
+      "ok": true,
+      "seconds": 2.1
+    },
+    {
+      "step": 18,
+      "title": "Usage and error handling",
+      "code": "getUsage(); getSession(bad id); getSession(unknown); ping(bad key)",
+      "screenshot": null,
+      "result": {
+        "usage": {
+          "month": "2026-11",
+          "billable_sessions": 0,
+          "limit": 0,
+          "projected": 0,
+          "stopped": false,
+          "per_session_price_cents": 200,
+          "free_sessions": 0,
+          "amount_cents": 0,
+          "currency": "USD"
+        },
+        "errors": {
+          "bad_id": {
+            "error": "ArgumentException",
+            "message": "not a 24Therapy id: not-an-id"
+          },
+          "unknown": {
+            "status": 404,
+            "code": "not_found",
+            "type": "not_found",
+            "message": "24Therapy 404 not_found: Nothing was found here. (request req_8f8c17c2f35f39b419fef27ec6237edd)",
+            "request_id": "req_8f8c17c2f35f39b419fef27ec6237edd",
+            "retry_after": null
+          },
+          "bad_key": {
+            "status": 401,
+            "code": "key_invalid",
+            "type": "authentication",
+            "message": "24Therapy 401 key_invalid: This API key is not valid. (request req_2cf4a8e9a052f4c1332f6c21dd6e8255)",
+            "request_id": "req_2cf4a8e9a052f4c1332f6c21dd6e8255",
+            "retry_after": null
+          }
+        }
+      },
+      "ok": true,
+      "seconds": 0.8
+    },
+    {
+      "step": 19,
+      "title": "Webhooks received and verified during the session",
+      "code": "verifyWebhook in the kit route",
+      "screenshot": "19.webp",
+      "result": [
+        "consent.given",
+        "grant.confirmed",
+        "transcript.ready",
+        "risk.alert.created",
+        "session.ended",
+        "note.draft_ready",
+        "note.approved",
+        "summary.draft_ready",
+        "risk.alert.acknowledged",
+        "summary.delivered",
+        "memory.updated"
+      ],
+      "ok": true,
+      "seconds": 0.2
     }
   ]
 }

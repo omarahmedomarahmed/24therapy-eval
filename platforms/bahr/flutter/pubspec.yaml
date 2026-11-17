@@ -1,5 +1,5 @@
 name: bahr_mind
-description: "A new Flutter project."
+description: "Bahr Mind: the therapist app on the base server, with the 24Therapy Flutter kit."
 publish_to: 'none'
 version: 0.1.0+1
 
@@ -10,6 +10,16 @@ dependencies:
   flutter:
     sdk: flutter
   material_ui: ^1.1.0
+  # The licensed 24Therapy Flutter kit, by path into kits/ (git-ignored: run tools/vendor-kits.sh first).
+  twentyfour_kit:
+    path: ../../../kits/x/24therapy-flutter/kits/flutter
+  twentyfour_zoom_kit:
+    path: ../../../kits/x/24therapy-flutter/kits/flutter-zoom
+  twentyfour_vonage_kit:
+    path: ../../../kits/x/24therapy-flutter/kits/flutter-vonage
+  twentyfour_agora_kit:
+    path: ../../../kits/x/24therapy-flutter/kits/flutter-agora
+  agora_rtc_engine: ^6.5.0
 
 dev_dependencies:
   flutter_test:
@@ -18,3 +28,5 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+  assets:
+    - assets/session-ar.wav

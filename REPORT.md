@@ -6,7 +6,16 @@ partner portal (server kits 3.0.0, browser kit 0.6.1, mobile kits 0.2.0). Every 
 
 ## 1. Matrix
 
-<!-- MATRIX -->
+| # | Platform | Server kit | Client | webrtc | daily | agora | vonage | zoom |
+|---|---|---|---|---|---|---|---|---|
+| 1 | Nilecare Talk | node | web | [**pass (47s)**](evals/nilecare/webrtc/steps.json) | [partial (68s)](evals/nilecare/daily/steps.json) | [partial (73s)](evals/nilecare/agora/steps.json) | [blocked](evals/nilecare/vonage/steps.json) | [blocked](evals/nilecare/zoom/steps.json) |
+| 2 | Sakan Therapy | python | web | [pass (53s)](evals/sakan/webrtc/steps.json) | [**partial (73s)**](evals/sakan/daily/steps.json) | [partial (72s)](evals/sakan/agora/steps.json) | [blocked](evals/sakan/vonage/steps.json) | [blocked](evals/sakan/zoom/steps.json) |
+| 3 | Wasla Health | php | web | [pass (63s)](evals/wasla/webrtc/steps.json) | [partial (72s)](evals/wasla/daily/steps.json) | [partial (78s)](evals/wasla/agora/steps.json) | [**blocked**](evals/wasla/vonage/steps.json) | [blocked](evals/wasla/zoom/steps.json) |
+| 4 | Hadith Care | dotnet | web | [pass (52s)](evals/hadith/webrtc/steps.json) | [partial (66s)](evals/hadith/daily/steps.json) | [**partial (71s)**](evals/hadith/agora/steps.json) | [blocked](evals/hadith/vonage/steps.json) | [blocked](evals/hadith/zoom/steps.json) |
+| 5 | Qamar Clinic | java | android | [pass (52s)](evals/qamar/webrtc/steps.json) | n/a | [**partial (71s)**](evals/qamar/agora/steps.json) | [blocked](evals/qamar/vonage/steps.json) | [blocked](evals/qamar/zoom/steps.json) |
+| 6 | Bahr Mind | python | flutter | n/a | n/a | [partial (76s)](evals/bahr/agora/steps.json) | [blocked](evals/bahr/vonage/steps.json) | [**blocked**](evals/bahr/zoom/steps.json) |
+| 7 | Rawda Space | dotnet | react-native | [**pass (50s)**](evals/rawda/webrtc/steps.json) | n/a | [partial (72s)](evals/rawda/agora/steps.json) | [blocked](evals/rawda/vonage/steps.json) | [blocked](evals/rawda/zoom/steps.json) |
+| 8 | Layla Health | node | ios | [pass (51s)](evals/layla/webrtc/steps.json) | n/a | [partial (72s)](evals/layla/agora/steps.json) | [**blocked**](evals/layla/vonage/steps.json) | [blocked](evals/layla/zoom/steps.json) |
 
 Legend: **bold** = the platform's default provider. `pass` = every step of the full session passed (portal-registered
 origin, patient consent page yes, audio of both speakers relayed through the kit, widget in the call, Egyptian
@@ -25,14 +34,16 @@ Why cells are not green:
 | **partial (environment): WebRTC media over UDP is blocked in this evaluation container.** Token minting, join and the clinician's own track work; the remote (patient) track never carries audio, so only clinician pieces reach the API. Agora's TLS cloud proxy (`startProxyServer(5)`) did not help | `agora` and `daily` web cells |
 | **rate limit**: the sandbox's 60 requests/minute was hit by the raw (non-kit) memory and copilot calls in one run; the kits would have retried, our raw calls did not | noted per cell |
 
-Mobile clients (beside the web matrix, which exercises each platform's server kit through the shared web client):
+Mobile clients (the web matrix above exercises each platform's server kit through the shared web client; these rows are the native clients):
 
-| Platform | Client | Build | Run | Notes |
+| Platform | Client | Build | Real device / simulator | Full session |
 | --- | --- | --- | --- | --- |
-| 5 Qamar Clinic | Android, Kotlin, Android kit 0.2.0 + Agora tap | **pass** (Gradle, AGP 8.7.3, 42 MB arm64 APK) | **partial**: installed and launched on a real Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0), permissions granted, Start tapped. Full session **blocked**: the device cannot reach the platform server (no public relay from this container; no BrowserStack Local key). Screens are black in device screenshots because the kit sets `FLAG_SECURE` (as its docs require) | APK: `apk-builds` branch, `bs://` build `qamar-clinic` |
-| 6 Bahr Mind | Flutter kit 0.2.0 (Zoom default, then Vonage, Agora) | see `platforms/bahr/` | Android: see below; iOS: **simulator only, not possible here** (no macOS; the kit is under NDA so it cannot be built in public CI) | |
-| 7 Rawda Space | React Native, docs' no-kit steps | GitHub Actions (`rn-rawda`): APK + release, iOS simulator | see Actions | no kit code, so it builds in public CI |
-| 8 Layla Health | iOS Swift, docs' no-kit steps | GitHub Actions (`ios-layla`): `swift test`, simulator build, launch, screenshot, recording | **simulator only** (a real iPhone needs an Apple Developer account) | |
+| 5 Qamar Clinic | Android, Kotlin, Android kit 0.2.0 + Agora tap | pass: Gradle, AGP 8.7.3, 42 MB arm64 APK, first try | pass: installed and launched on a real Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0, APK from a public GitHub link). Screens are black in device screenshots because the kit sets `FLAG_SECURE` (as its docs require) | blocked: the device cannot reach the platform server (no public relay from this container) |
+| 6 Bahr Mind | Flutter, Flutter kit 0.2.0 + Agora adapter (Zoom default and Vonage are blocked) | pass: 68 MB arm64 APK after trimming from 214 MB; `flutter analyze` and `flutter test` clean | pass: launched on a real Pixel 8 in Bahr colours, RTL ([steps](evals/bahr/android-device/steps.json)). iOS: not possible here (no macOS, and the kit is under NDA so it cannot go to public CI) | blocked: same relay reason; also the kit refuses an `http://` relay unless loopback |
+| 7 Rawda Space | React Native 0.76.5, docs' no-kit steps | pass: APK built in GitHub Actions and published as release `rawda-rn-2` | pass: launched on a real Pixel 8 from the release link ([steps](evals/rawda/android-device/steps.json)); iOS simulator job re-queued | blocked: same relay reason |
+| 8 Layla Health | iOS, Swift, docs' no-kit steps | pass: `swift test`, simulator build (GitHub Actions `ios-layla`) | **simulator only**: launched, screenshot and recording as CI artifacts ([steps](evals/layla/ios-simulator/steps.json)). A real iPhone needs an Apple Developer account | blocked: no sandbox key in public CI, server not reachable from the runner |
+
+To finish the device sessions: put one platform server on a public HTTPS URL (or give a BrowserStack Local key), then press Start, Consent and Feed on the device.
 
 ## 2. Kit scorecard (1 = poor, 5 = excellent)
 
@@ -45,7 +56,7 @@ Mobile clients (beside the web matrix, which exercises each platform's server ki
 | Java server 3.0.0 | 4 | 4 | 3 | 4 | 5 | 4 | 5 | 3 | 4 (52 s; ~4 min) |
 | Browser kit 0.6.1 | 5 | 5 | 5 | 5 | 5 | 5 | 5 | 4 | 5 |
 | Android kit 0.2.0 | 4 | 4 | 4 | 4 | 5 | 3 | 3 | 4 | 3 (APK built first try; no device session) |
-| Flutter kit 0.2.0 | see §3 | | | | | | | | |
+| Flutter kit 0.2.0 | 3 | 3 | 4 | 5 | 4 | 3 | 2 | 2 | 3 (~1.5 h to first APK: SDK 36, NDK, Agora compileSdk) |
 | React Native, no-kit steps | 3 | 4 | 3 | 3 | 4 | 4 | 4 | 2 | 3 |
 | iOS Swift, no-kit steps | 3 | 4 | 3 | 3 | 4 | 4 | 5 | 2 | 3 |
 | Adapter: plain WebRTC (browser) | 5 | 5 | 5 | n/a | 5 | n/a | 5 | 5 | 5 |
@@ -107,7 +118,15 @@ every web run; the Franco line was transcribed into Arabic script and raised an 
 - Size: the Agora voice SDK adds ~110 MB for all ABIs; the docs could recommend `abiFilters`.
 - Top 3: allow `http://localhost`/`10.0.2.2` frame origins for sandbox builds; publish the Maven artifacts so the zip is not needed; a sample that feeds a WAV through `onLocalPcm` (the "generic input" for device farms).
 
+### Flutter kit 0.2.0
+- `CaptureSession` with generic `onLocalPcm` / `onRemotePcm` / `onMixedPcm` and a `held` state is clean (`capture.dart:24,153-176`); retries and piece keys solid (`capture.dart:414-455`, `relay.dart:205-229`); kit tests pass (core 23, Agora 2, Vonage 4, Zoom 1).
+- Kit-not-docs: the relay refuses `http://` unless the host is loopback (`relay.dart:242`); the emulator default `10.0.2.2` fails. Docs-not-kit: path `../24therapy/kits/...` (docs) does not match the zip; the Zoom README uses a third layout.
+- Example fails as written: the Zoom capture snippet uses `source` before declaring it (`flutter-zoom/README.md:91-93`, also on the docs page).
+- Size: core forces `webview_flutter`; Agora defaults give a 214 MB APK; plugins pin AGP 8.7.3 / `kotlin-android`, which Flutter 3.50 warns will break; compileSdk 35 vs the Vonage README's 37.
+- Top 3: fix the Zoom snippet and paths; allow `http://10.0.2.2` in sandbox builds; make the widget (`webview_flutter`) optional.
+
 ### React Native and iOS (docs' no-kit steps)
+- React Native: `I18nManager.allowRTL(true)` alone leaves the layout LTR on an English device; the docs could say to `forceRTL` for Arabic-first clinician apps.
 - The protocol table on `/docs/apps/other` was enough to write both clients (cutter, overlap, idempotency key, consent polling, retries) in ~150 lines each.
 - Missing: no reference test vectors for the piece key and the cutter outside the NDA zip (the shared vectors are in `kits/mobile/test-vectors.json`), so a no-kit client cannot prove it matches; React Native's `fetch` cannot send a typed array body (we used XHR) — undocumented.
 - Top 3: publish the cutter/key vectors on the public page; a reference no-kit client; say how to read `session_seconds`.

@@ -1,0 +1,5 @@
+{"platform":"layla","client":"ios-swift (docs' no-kit steps)","device":"iPhone simulator on a GitHub Actions macOS runner","verdict":"partial","reason":"simulator only (a real iPhone needs an Apple Developer account); no 24Therapy key in public CI, so the run stops at the start screen","ci_run":"https://github.com/omarahmedomarahmed/24therapy-eval/actions/runs/44135546223","steps":[
+ {"step":1,"title":"Unit tests: cutter overlap and size, piece key, bundled audio is 16 kHz mono","code":"swift test (LaylaCore)","screenshot":null,"result":"pass","ok":true},
+ {"step":2,"title":"Generate the project and build for the simulator","code":"xcodegen generate; xcodebuild -sdk iphonesimulator","screenshot":null,"result":"pass","ok":true},
+ {"step":3,"title":"Boot an iPhone simulator, install, launch, screenshot and record","code":"xcrun simctl boot/install/launch; simctl io screenshot/recordVideo","screenshot":"CI artifact layla-ios-simulator","result":"pass","ok":true},
+ {"step":4,"title":"Full session","code":"Start -> server","screenshot":null,"result":"blocked: needs the platform server reachable from the runner and a sandbox key as an Actions secret","ok":false}]}

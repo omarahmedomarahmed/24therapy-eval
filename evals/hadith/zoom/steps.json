@@ -5,7 +5,7 @@
   "verdict": "blocked",
   "reason": "blocked: Zoom Video SDK key and secret needed",
   "first_session_seconds": null,
-  "total_seconds": 40.875,
+  "total_seconds": 40.013,
   "steps": [
     {
       "step": 1,
@@ -53,7 +53,7 @@
       "code": "POST /api/start -> putClinician, createSubject, createSession",
       "screenshot": "04.webp",
       "result": {
-        "session": "ses_7403708c16234629874ef0013f179991",
+        "session": "ses_5510f819195d43b8be15821a356a1b56",
         "status": "awaiting_consent"
       },
       "ok": true,
@@ -69,7 +69,7 @@
         "عمري 18+"
       ],
       "ok": true,
-      "seconds": 2.3
+      "seconds": 1.8
     },
     {
       "step": 6,
@@ -95,7 +95,7 @@
         "video_error": "blocked: Zoom Video SDK key and secret needed"
       },
       "ok": false,
-      "seconds": 22.1
+      "seconds": 22
     }
   ]
 }

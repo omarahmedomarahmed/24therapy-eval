@@ -1,0 +1,6 @@
+{"platform":"bahr","client":"flutter-android","device":"Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0)","verdict":"partial","reason":"installed and launched; full session needs the platform server on a public URL","steps":[
+ {"step":1,"title":"Build the Flutter APK (Flutter kit 0.2.0 + Agora adapter)","code":"flutter build apk --release --target-platform android-arm64 --dart-define=VIDEO_PROVIDER=agora","screenshot":null,"result":"68 MB APK","ok":true},
+ {"step":2,"title":"Publish the APK at a public link","code":"apk-builds branch: bahr-mind-0.1.0-arm64.apk","screenshot":null,"result":"200","ok":true},
+ {"step":3,"title":"Upload to BrowserStack from the public link","code":"upload_app_build url=raw.githubusercontent.com/.../bahr-mind-0.1.0-arm64.apk custom_id=bahr-mind","screenshot":null,"result":"bs:// build created","ok":true},
+ {"step":4,"title":"Launch on a real Pixel 8 (Android 14)","code":"create_session appium_version=2.19.0 auto_grant_permissions=true","screenshot":"01-launch-pixel8.webp","result":"app shows Bahr colours, RTL Arabic + English","ok":true},
+ {"step":5,"title":"Full session","code":"Start session -> server","screenshot":null,"result":"blocked: the platform server is not on a public URL (no tunnel from the evaluation container)","ok":false}]}

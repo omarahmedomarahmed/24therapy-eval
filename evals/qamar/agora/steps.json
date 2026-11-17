@@ -2,6 +2,10 @@
   "platform": "qamar",
   "provider": "agora",
   "server": "java",
+  "verdict": "partial",
+  "reason": "Audio pieces of both speakers relayed through POST /24t/sessions/{id}/audio",
+  "first_session_seconds": 70.927,
+  "total_seconds": 107.02,
   "steps": [
     {
       "step": 1,

@@ -2,10 +2,10 @@
   "platform": "rawda",
   "provider": "webrtc",
   "server": "dotnet",
-  "verdict": "partial",
-  "reason": "Memory and copilot (raw HTTPS: the kit has no method)",
-  "first_session_seconds": 47.471,
-  "total_seconds": 90.211,
+  "verdict": "pass",
+  "reason": "",
+  "first_session_seconds": 50.201,
+  "total_seconds": 94.627,
   "steps": [
     {
       "step": 1,
@@ -45,7 +45,7 @@
         "title": "Rawda Space"
       },
       "ok": true,
-      "seconds": 0.9
+      "seconds": 0.5
     },
     {
       "step": 4,
@@ -53,11 +53,11 @@
       "code": "POST /api/start -> putClinician, createSubject, createSession",
       "screenshot": "04.webp",
       "result": {
-        "session": "ses_4bae438670cd44cd8983981fa932ae26",
+        "session": "ses_113ba04edf2c42fab64f99c0aff28d9c",
         "status": "awaiting_consent"
       },
       "ok": true,
-      "seconds": 1.2
+      "seconds": 1.5
     },
     {
       "step": 5,
@@ -69,7 +69,7 @@
         "عمري 18+"
       ],
       "ok": true,
-      "seconds": 1.8
+      "seconds": 2.2
     },
     {
       "step": 6,
@@ -95,7 +95,7 @@
         "video_error": null
       },
       "ok": true,
-      "seconds": 2.8
+      "seconds": 1.8
     },
     {
       "step": 8,
@@ -125,11 +125,6 @@
           "status": 200
         },
         {
-          "speaker": "patient",
-          "outcome": "sent",
-          "status": 200
-        },
-        {
           "speaker": "clinician",
           "outcome": "sent",
           "status": 200
@@ -141,6 +136,11 @@
         },
         {
           "speaker": "clinician",
+          "outcome": "sent",
+          "status": 200
+        },
+        {
+          "speaker": "patient",
           "outcome": "sent",
           "status": 200
         }
@@ -204,12 +204,12 @@
       "code": "recorder.stop(); POST /api/sessions/{id}/end -> endSession (Idempotency-Key end-<id>)",
       "screenshot": "12.webp",
       "result": {
-        "id": "ses_4bae438670cd44cd8983981fa932ae26",
-        "ended_at": "2026-11-17T17:10:55Z",
+        "id": "ses_113ba04edf2c42fab64f99c0aff28d9c",
+        "ended_at": "2026-11-17T17:40:07Z",
         "status": "note_drafting"
       },
       "ok": true,
-      "seconds": 2.9
+      "seconds": 3
     },
     {
       "step": 13,
@@ -232,11 +232,12 @@
           "grant.confirmed",
           "transcript.ready",
           "risk.alert.created",
-          "session.ended"
+          "session.ended",
+          "note.draft_ready"
         ]
       },
       "ok": true,
-      "seconds": 7.1
+      "seconds": 10.4
     },
     {
       "step": 14,
@@ -247,7 +248,7 @@
         "status": "approved"
       },
       "ok": true,
-      "seconds": 0.9
+      "seconds": 1
     },
     {
       "step": 15,
@@ -258,7 +259,7 @@
         "status": "acknowledged"
       },
       "ok": true,
-      "seconds": 0.7
+      "seconds": 0.8
     },
     {
       "step": 16,
@@ -270,7 +271,7 @@
         "approved": "delivered"
       },
       "ok": true,
-      "seconds": 1
+      "seconds": 10.4
     },
     {
       "step": 17,
@@ -278,19 +279,20 @@
       "code": "GET /subjects/{id}/memory?clinician=  +  POST /copilot/questions",
       "screenshot": "17.webp",
       "result": {
-        "memory": {
-          "type": "rate_limit",
-          "code": "rate_limited",
-          "message": "Too many requests. Try again in 11 seconds.",
-          "param": null,
-          "request_id": "req_df04ef673bbd9a6bc5e047b89b3ae92a"
-        },
+        "memory": [
+          "subject",
+          "generated_at",
+          "profile",
+          "conflicts",
+          "timeline"
+        ],
         "copilot": {
-          "error": "page.evaluate: Error: {\"error\":{\"type\":\"rate_limit\",\"code\":\"rate_limited\",\"message\":\"Too many requests. Try again in 11 seconds.\",\"param\":null,\"request_id\":\"req_b6500671161459e9ec24d06dc6b754cb\"}}\n    at Object.j (http://localhost:3070/static/app.js:4:372)\n    at async <anonymous>:337:30"
+          "answer": "اتفقنا على مناقشة المزيد من التفاصيل حول روتين النوم في الجلسة القادمة [S-rawda-1794937172518].",
+          "citations": 1
         }
       },
-      "ok": false,
-      "seconds": 0.7
+      "ok": true,
+      "seconds": 2.1
     },
     {
       "step": 18,
@@ -318,22 +320,22 @@
             "status": 404,
             "code": "not_found",
             "type": "not_found",
-            "message": "24Therapy 404 not_found: Nothing was found here. (request req_298b3279f5d5e3a8a0251b13cd6d2b10)",
-            "request_id": "req_298b3279f5d5e3a8a0251b13cd6d2b10",
+            "message": "24Therapy 404 not_found: Nothing was found here. (request req_3c87984c8de9cb01d3f62b252188c537)",
+            "request_id": "req_3c87984c8de9cb01d3f62b252188c537",
             "retry_after": null
           },
           "bad_key": {
             "status": 401,
             "code": "key_invalid",
             "type": "authentication",
-            "message": "24Therapy 401 key_invalid: This API key is not valid. (request req_d23c521b6e0ddd4b8f8e58d95dd44bb4)",
-            "request_id": "req_d23c521b6e0ddd4b8f8e58d95dd44bb4",
+            "message": "24Therapy 401 key_invalid: This API key is not valid. (request req_b19f3e42216c0a5aae71319bc940acb7)",
+            "request_id": "req_b19f3e42216c0a5aae71319bc940acb7",
             "retry_after": null
           }
         }
       },
       "ok": true,
-      "seconds": 12
+      "seconds": 0.8
     },
     {
       "step": 19,
@@ -350,11 +352,11 @@
         "note.approved",
         "summary.draft_ready",
         "risk.alert.acknowledged",
-        "summary.delivered",
-        "memory.updated"
+        "memory.updated",
+        "summary.delivered"
       ],
       "ok": true,
-      "seconds": 0.2
+      "seconds": 0.3
     }
   ]
 }
