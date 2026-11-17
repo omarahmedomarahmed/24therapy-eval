@@ -1,0 +1,15 @@
+// Your server's environment, never in code: TWENTYFOUR_API_KEY (24t_sk_••••... first)
+// and TWENTYFOUR_WIDGET_ORIGIN=http://localhost:3010, the page that frames the widget.
+// This only mints the launch: the part and the display mode are set where the page mounts it (the web or React snippet).
+import express from "express";
+import { createRoutes, nodeAdapter, TwentyFour } from "@24therapy/server";
+
+const app = express();
+const routes = createRoutes(new TwentyFour(), {
+  // Your own login: the clinician's ref in your system, never from the request body.
+  currentClinician: (_request, { native }) => native.user?.clinicianRef ?? null,
+});
+
+app.use(yourSessionMiddleware); // sets req.user
+app.use(nodeAdapter(routes)); // POST /24t/widget-token mints each launch
+app.use(express.json()); // after the kit: it reads raw bodies

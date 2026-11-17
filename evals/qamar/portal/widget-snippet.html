@@ -1,0 +1,14 @@
+<!-- The page at https://clinic.example.com. Copy the kit file from the portal's Kits page to your own server. -->
+<div id="twentyfour-widget" data-session="ses_..."></div>
+<script src="/vendor/24therapy-browser-0.6.1.iife.js"
+        integrity="sha384-7/shV4Hav5AMKq/WgFBnOlChxgLyIFE0xbb/jTuu6KsHbM3u7nvSjolQDUuiT63V" crossorigin="anonymous"></script>
+<script>
+  var K = window.TwentyFourBrowser;
+  var el = document.getElementById("twentyfour-widget");
+  var widget = K.mount(el, {
+    launch: K.widgetLauncher("/24t", { view: "session", session: el.dataset.session, locale: "ar" }),
+    locale: "ar",
+    part: "session",
+    height: "640px",
+  });
+</script>

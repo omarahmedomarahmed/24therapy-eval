@@ -1,0 +1,11 @@
+<!doctype html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Therapist room</title><link rel="stylesheet" href="/static/base.css"></head>
+<body><header><img id="logo" alt=""><b id="pname"></b><span class="tag" id="prov"></span><span class="tag">المعالج · Therapist</span></header>
+<main>
+ <section class="room"><div class="videos"><video id="local" autoplay muted playsinline></video><video id="remote" autoplay playsinline></video></div>
+  <div class="bar"><button id="start">ابدأ الجلسة · Start session</button><button id="end" disabled>إنهاء · End</button></div>
+  <p id="status" class="muted">—</p><p id="rec" class="muted"></p><div id="patientlink" class="muted"></div></section>
+ <section class="side"><div id="twentyfour-widget"></div><div id="panel"></div></section>
+</main>
+<script src="/vendor/24therapy-browser-0.6.1.iife.js"></script>
+<script src="/static/providers.js"></script><script src="/static/app.js"></script><script>App.therapist()</script></body></html>

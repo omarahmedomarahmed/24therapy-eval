@@ -1,0 +1,9 @@
+{
+  "note": "Invented lines for an invented patient. Not a real person.",
+  "segments": [
+    { "speaker": "clinician", "text": "إزيك النهارده؟ الأسبوع ده كان عامل إزاي معاك؟" },
+    { "speaker": "patient", "text": "بصراحة تعبت أوي، ساعات بحس إني عايز أموت نفسي وأخلص من كل ده." },
+    { "speaker": "clinician", "text": "شكرًا إنك قلتلي. إنت دلوقتي في أمان؟" },
+    { "speaker": "patient", "text": "msh 3aref, sa3at bafakar a2tel nafsy w akhalas mn kol da" }
+  ]
+}

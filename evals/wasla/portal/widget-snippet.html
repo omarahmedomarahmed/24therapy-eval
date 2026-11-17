@@ -1,0 +1,24 @@
+<?php
+// .env, never in code: TWENTYFOUR_API_KEY (24t_sk_••••... first)
+// and TWENTYFOUR_WIDGET_ORIGIN=http://localhost:3030, the page that frames the widget.
+// routes/web.php, so $request->user() is your session's user. These routes answer only a JSON
+// body, which a form on another site cannot send, so they are left out of CSRF checking.
+// Laravel 11, bootstrap/app.php: $middleware->validateCsrfTokens(except: ['24t/*', '24t-patient-page']);
+// (Laravel 10: the same two paths in VerifyCsrfToken::$except.)
+// This only mints the launch: the part and the display mode are set where the page mounts it (the web or React snippet).
+use TwentyFourTherapy\Client;
+use TwentyFourTherapy\KitRequest;
+use TwentyFourTherapy\Routes;
+
+$routes = new Routes(new Client(),
+    // Your own login: the clinician ref you registered, never from the request body.
+    currentClinician: fn (KitRequest $r) => $r->native?->user()?->clinician_ref,
+);
+
+// POST /24t/widget-token mints each launch (the kit answers 415 to anything but JSON).
+Route::match(['GET', 'POST'], '/24t/{path}', function (Illuminate\Http\Request $request, string $path) use ($routes) {
+    $kit = new KitRequest($request->method(), '/' . $path, array_map(fn ($v) => $v[0] ?? '', $request->headers->all()), $request->getContent(), $request);
+    $answer = $routes->handle($kit);
+    abort_if($answer === null, 404);
+    return response($answer->body, $answer->status, $answer->headers);
+})->where('path', '.*');

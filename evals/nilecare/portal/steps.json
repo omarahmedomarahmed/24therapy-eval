@@ -1,0 +1,78 @@
+[
+  {
+    "step": 1,
+    "title": "Signed in to the partner portal",
+    "code": "https://www.24therapy.app/portal/sign-in",
+    "screenshot": "portal/01-signed-in-to-the-partner-portal.webp",
+    "result": "Home shows the next step",
+    "seconds": 4.8
+  },
+  {
+    "step": 2,
+    "title": "Kit Licence and NDA signed",
+    "code": "Sign",
+    "screenshot": "portal/02-kit-licence-and-nda-signed.webp",
+    "result": "Signed. The kits are open to your team.",
+    "seconds": 0.1
+  },
+  {
+    "step": 3,
+    "title": "Set your stack",
+    "result": "failed: page.selectOption: Timeout 30000ms exceeded."
+  },
+  {
+    "step": 4,
+    "title": "Keys page",
+    "code": "/portal/keys",
+    "screenshot": "portal/04-keys-page.webp",
+    "result": "Keys / Keys for your server. Each key is shown once. / Make a key",
+    "seconds": 32.2
+  },
+  {
+    "step": 5,
+    "title": "Kits page",
+    "code": "/portal/kits",
+    "screenshot": "portal/05-kits-page.webp",
+    "result": "Keys / Keys for your server. Each key is shown once. / Make a key",
+    "seconds": 2.1
+  },
+  {
+    "step": 6,
+    "title": "Playground page",
+    "code": "/portal/playground",
+    "screenshot": "portal/06-playground-page.webp",
+    "result": "Playground / Real requests to your own sandbox. / Requests",
+    "seconds": 3
+  },
+  {
+    "step": 7,
+    "title": "Download the kits",
+    "code": "Kits > Download",
+    "result": "24therapy-server-node.zip, 24therapy-browser.zip, 24therapy-cli.zip",
+    "seconds": 0
+  },
+  {
+    "step": 8,
+    "title": "Add the test origin",
+    "code": "Widget > Origins: http://localhost:3010",
+    "screenshot": "portal/08-add-the-test-origin.webp",
+    "result": "http://localhost:3010 saved",
+    "seconds": 5.6
+  },
+  {
+    "step": 9,
+    "title": "Fill the widget builder",
+    "code": "primary #E4572E, ink #3B1F14, surface #FFF6F2, logo https://cdn.jsdelivr.net/gh/devicons/devicon/icons/nodejs/nodejs-original.svg",
+    "screenshot": "portal/09-fill-the-widget-builder.webp",
+    "result": "filled",
+    "seconds": 1.5
+  },
+  {
+    "step": 10,
+    "title": "Builder saved, live preview in platform colours",
+    "code": "Save these choices",
+    "screenshot": "portal/10-builder-saved-live-preview-in-platform-colours.webp",
+    "result": "saved",
+    "seconds": 3.8
+  }
+]

@@ -1,0 +1,86 @@
+[
+  {
+    "step": 1,
+    "title": "Signed in to the partner portal",
+    "code": "https://www.24therapy.app/portal/sign-in",
+    "screenshot": "portal/01-signed-in-to-the-partner-portal.webp",
+    "result": "Home shows the next step",
+    "seconds": 3.4
+  },
+  {
+    "step": 2,
+    "title": "Tick the Kit Licence and NDA",
+    "code": "Home: I have read ... and I sign it",
+    "screenshot": "portal/02-tick-the-kit-licence-and-nda.webp",
+    "result": "ticked",
+    "seconds": 0.1
+  },
+  {
+    "step": 3,
+    "title": "Kit Licence and NDA signed",
+    "code": "Sign",
+    "screenshot": "portal/03-kit-licence-and-nda-signed.webp",
+    "result": "Signed. The kits are open to your team.",
+    "seconds": 1.6
+  },
+  {
+    "step": 4,
+    "title": "Set your stack",
+    "result": "failed: page.selectOption: Timeout 5000ms exceeded."
+  },
+  {
+    "step": 5,
+    "title": "Keys page",
+    "code": "/portal/keys",
+    "screenshot": "portal/05-keys-page.webp",
+    "result": "Keys / Keys for your server. Each key is shown once. / Make a key",
+    "seconds": 7.4
+  },
+  {
+    "step": 6,
+    "title": "Kits page",
+    "code": "/portal/kits",
+    "screenshot": "portal/06-kits-page.webp",
+    "result": "Keys / Keys for your server. Each key is shown once. / Make a key",
+    "seconds": 2.2
+  },
+  {
+    "step": 7,
+    "title": "Playground page",
+    "code": "/portal/playground",
+    "screenshot": "portal/07-playground-page.webp",
+    "result": "Playground / Real requests to your own sandbox. / Requests",
+    "seconds": 2.5
+  },
+  {
+    "step": 8,
+    "title": "Download the kits",
+    "code": "Kits > Download",
+    "result": "24therapy-server-php.zip, 24therapy-browser.zip, 24therapy-cli.zip",
+    "seconds": 0
+  },
+  {
+    "step": 9,
+    "title": "Add the test origin",
+    "code": "Widget > Origins: http://localhost:3030",
+    "screenshot": "portal/09-add-the-test-origin.webp",
+    "result": "http://localhost:3030 saved",
+    "seconds": 6
+  },
+  {
+    "step": 10,
+    "title": "Fill the widget builder",
+    "code": "primary #7A86B8, ink #24263D, surface #F6F6FB, logo https://cdn.jsdelivr.net/gh/devicons/devicon/icons/php/php-original.svg",
+    "screenshot": "portal/10-fill-the-widget-builder.webp",
+    "result": "filled",
+    "seconds": 1.9
+  },
+  {
+    "step": 11,
+    "title": "Builder saved, live preview in platform colours",
+    "code": "Save these choices",
+    "screenshot": "portal/11-builder-saved-live-preview-in-platform-colours.webp",
+    "result": "saved",
+    "seconds": 2.8
+  }
+]
