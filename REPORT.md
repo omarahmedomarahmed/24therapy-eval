@@ -38,12 +38,12 @@ Mobile clients (the web matrix above exercises each platform's server kit throug
 
 | Platform | Client | Build | Real device / simulator | Full session |
 | --- | --- | --- | --- | --- |
-| 5 Qamar Clinic | Android, Kotlin, Android kit 0.2.0 + Agora tap | pass: Gradle, AGP 8.7.3, 42 MB arm64 APK, first try | pass: installed and launched on a real Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0, APK from a public GitHub link). Screens are black in device screenshots because the kit sets `FLAG_SECURE` (as its docs require) | blocked: the device cannot reach the platform server (no public relay from this container) |
+| 5 Qamar Clinic | Android, Kotlin, Android kit 0.2.0 + Agora tap | pass: Gradle, AGP 8.7.3, 42 MB arm64 APK, first try | pass: real Google Pixel 8, Android 14 (BrowserStack, Appium 2.19.0). Screens are black in screenshots of the app itself because the kit sets `FLAG_SECURE` | **partial** ([steps](evals/qamar/android-device/steps.json)): through a public Java-kit relay (Vercel Sandbox, stopped after the run) the device joined Agora, the patient said yes on the real consent page, the kit captured and relayed audio, the transcript came back in Egyptian Arabic and a SOAP note was drafted. The risk lines did not arrive: our app fed the WAV into the same local lane as the Agora mic tap |
 | 6 Bahr Mind | Flutter, Flutter kit 0.2.0 + Agora adapter (Zoom default and Vonage are blocked) | pass: 68 MB arm64 APK after trimming from 214 MB; `flutter analyze` and `flutter test` clean | pass: launched on a real Pixel 8 in Bahr colours, RTL ([steps](evals/bahr/android-device/steps.json)). iOS: not possible here (no macOS, and the kit is under NDA so it cannot go to public CI) | blocked: same relay reason; also the kit refuses an `http://` relay unless loopback |
 | 7 Rawda Space | React Native 0.76.5, docs' no-kit steps | pass: APK built in GitHub Actions and published as release `rawda-rn-2` | pass: launched on a real Pixel 8 from the release link ([steps](evals/rawda/android-device/steps.json)); iOS simulator job re-queued | blocked: same relay reason |
 | 8 Layla Health | iOS, Swift, docs' no-kit steps | pass: `swift test`, simulator build (GitHub Actions `ios-layla`) | **simulator only**: launched, screenshot and recording as CI artifacts ([steps](evals/layla/ios-simulator/steps.json)). A real iPhone needs an Apple Developer account | blocked: no sandbox key in public CI, server not reachable from the runner |
 
-To finish the device sessions: put one platform server on a public HTTPS URL (or give a BrowserStack Local key), then press Start, Consent and Feed on the device.
+Bahr and Rawda were not re-run against the public relay (same relay route; their builds and launches are proven above).
 
 ## 2. Kit scorecard (1 = poor, 5 = excellent)
 
@@ -116,7 +116,7 @@ every web run; the Franco line was transcribed into Arabic script and raised an 
 - Kit-not-docs: `WidgetView.load` refuses any frame origin that is not `https://` (`WidgetView.kt:44`), while the portal and docs allow `http://localhost` origins in the sandbox: the app and the web origin cannot share one sandbox origin.
 - `FLAG_SECURE` (`WidgetView.secure`) makes every device-farm screenshot black: correct for production, but the docs could suggest a debug-only switch for test builds.
 - Size: the Agora voice SDK adds ~110 MB for all ABIs; the docs could recommend `abiFilters`.
-- Top 3: allow `http://localhost`/`10.0.2.2` frame origins for sandbox builds; publish the Maven artifacts so the zip is not needed; a sample that feeds a WAV through `onLocalPcm` (the "generic input" for device farms).
+- Kit-not-docs: `CaptureSession` accepts frames for one lane from two producers (a tap and `onLocalPcm`) without warning; time doubles and pieces are garbled. Top 3: warn or refuse a second producer per lane; publish the Maven artifacts so the zip is not needed; a sample that feeds a WAV through `onLocalPcm` (the "generic input" for device farms).
 
 ### Flutter kit 0.2.0
 - `CaptureSession` with generic `onLocalPcm` / `onRemotePcm` / `onMixedPcm` and a `held` state is clean (`capture.dart:24,153-176`); retries and piece keys solid (`capture.dart:414-455`, `relay.dart:205-229`); kit tests pass (core 23, Agora 2, Vonage 4, Zoom 1).
